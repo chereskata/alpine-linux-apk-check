@@ -7,11 +7,11 @@ cd /tmp/flagged
 # download flagged package list
 i=1; while [ "$i" -le 20 ]
 do
-    wget https://pkgs.alpinelinux.org/flagged?page=${i}
+    wget "https://pkgs.alpinelinux.org/packages?page=${i}&name=&branch=edge&repo=&arch=x86_64&origin=yes&maintainer=&flagged=yes"
     i=$(( i + 1 ))
 done
-
-cat *page* | grep -e "<td class=\"package\">" | sed -e "s/ *<.*\">//" -e "s/<.*> *//" | sort -u > outdated.txt
+# filter the results regarding package names
+cat *packages* | grep -A 1 -e "href=\"/package/" | sed -e "/href/d" -e "s/(\\t\| )*//g" | sort -u > outdated.txt
 
 # gather installed packages
 apk list -I | sed -e "s/.*{//" -e "s/}.*//" | sort -u > installed.txt
