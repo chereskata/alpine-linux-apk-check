@@ -7,11 +7,11 @@ cd /tmp/umaint
 # download flagged package list
 i=1; while [ "$i" -le 35 ]
 do
-    wget "https://pkgs.alpinelinux.org/packages?maintainer=None&page=${i}&branch=edge&arch=x86_64"
+    wget "https://pkgs.alpinelinux.org/packages?page=${i}&name=&branch=edge&repo=&arch=x86_64&origin=yes&maintainer=None&flagged="
     i=$(( i + 1 ))
 done
 
-cat *packages* | grep -A 1 -e "<td class=\"package\">" | grep hint--right | sed -e "s/ *<.*\">//" -e "s/<.*> *//" | sort -u > unmaintained.txt
+cat *packages* | grep -A 1 -e "href=\"/package/" | sed -e "/href/d" -e "s/(\\t\| )*//g" | sort -u > unmaintained.txt
 
 # gather installed packages
 apk list -I | sed -e "s/.*{//" -e "s/}.*//" | sort -u > installed.txt
